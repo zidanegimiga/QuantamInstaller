@@ -216,3 +216,19 @@ install_miniconda() {
   
   [[ -f "$MINICONDA_DIR/bin/activate" ]] || error_exit "Miniconda installation verification failed"
 }
+
+
+setup_conda_env() {
+  log "Setting up conda environment..."
+  source "$MINICONDA_DIR/bin/activate" || error_exit "Failed to activate Miniconda"
+  if [[ ! -d "$INSTALL_ENV_DIR" ]]; then
+    log "Creating conda environment with: $PACKAGES_TO_INSTALL"
+    conda create -y -n "$ENV_NAME" $PACKAGES_TO_INSTALL || error_exit "Conda environment creation failed"
+  fi
+  conda activate "$ENV_NAME" || error_exit "Environment activation failed"
+  
+  conda install conda -y
+  
+  log "Environment '$ENV_NAME' activated"
+  export CUDA_PATH="$INSTALL_ENV_DIR"
+}
