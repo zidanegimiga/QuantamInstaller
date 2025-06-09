@@ -356,4 +356,6 @@ main() {
   finalize_installation
 }
 
+trap 'echo -e "\n\nInstallation interrupted by user."; exit 130' INT TERM
 
+main "$@"
