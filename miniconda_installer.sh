@@ -322,3 +322,38 @@ select_binding() {
     esac
   done
 }
+
+finalize_installation() {
+  log "Finalizing installation..."
+  mkdir -p "$INSTALL_ENV_DIR/bin"
+  
+  cat << 'EOF'
+
+*******************************************************************
+*                    Installation Complete!                      *
+*                                                               *
+* IMPORTANT: If using Apple Silicon (M1/M2/M3), select         *
+* "Apple Silicon" in settings before installing bindings.      *
+* For Intel Macs, select "Apple Intel".                        *
+*                                                               *
+* Run './macos_run.sh' to start LoLLMs WebUI                   *
+*******************************************************************
+
+EOF
+}
+
+main() {
+  print_banner
+  preflight_checks
+  setup_homebrew
+  setup_environment
+  install_miniconda
+  setup_conda_env
+  manage_repository
+  install_dependencies
+  setup_scripts
+  select_binding
+  finalize_installation
+}
+
+
