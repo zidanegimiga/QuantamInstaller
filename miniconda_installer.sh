@@ -172,3 +172,31 @@ preflight_checks() {
   
   ((${#SCRIPT_DIR} > 100)) && echo "WARNING: Long installation path detected. This may cause issues."
 }
+
+
+setup_homebrew() {
+  log "Checking Homebrew installation..."
+  
+  if ! command -v brew &>/dev/null; then
+    error_exit "Homebrew is required. Install from https://brew.sh"
+  fi
+  
+  log "Homebrew found. Checking GCC..."
+  
+  if brew list gcc &>/dev/null; then
+    log "GCC already installed"
+  else
+    log "Installing GCC..."
+    brew install gcc
+  fi
+}
+
+setup_environment() {
+  log "Setting up clean environment..."
+  unset CONDA_SHLVL PYTHONPATH PYTHONHOME
+  export PYTHONNOUSERSITE=1
+  export TEMP="$INSTALLER_FILES/temp"
+  export TMP="$INSTALLER_FILES/temp"
+  
+  mkdir -p "$INSTALLER_FILES/temp"
+}
