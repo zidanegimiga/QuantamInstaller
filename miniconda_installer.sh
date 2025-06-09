@@ -125,3 +125,6 @@ echo -e "\n${BOLD}${WHITE}Press ENTER to initiate quantum installation sequence.
 read -r
 
 echo -e "\n${GREEN}${BOLD}🚀 QUANTUM INSTALLATION COMMENCING... 🚀${NC}\n"
+
+
+set -euo pipefail
