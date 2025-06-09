@@ -260,3 +260,19 @@ manage_repository() {
     fi
   done
 }
+
+install_dependencies() {
+  log "Installing Python dependencies..."
+  
+  cd "$LOLLMS_DIR"
+  
+  while IFS= read -r requirement; do
+    if [[ "$requirement" == git+* ]]; then
+      local package_name
+      package_name=$(echo "$requirement" | awk -F'/' '{print $4}' | awk -F'@' '{print $1}')
+      [[ -n "$package_name" ]] && python -m pip uninstall -y "$package_name" 2>/dev/null || true
+    fi
+  done < requirements.txt
+  
+  python -m pip install -r requirements.txt --upgrade
+}
