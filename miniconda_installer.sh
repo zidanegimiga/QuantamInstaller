@@ -232,3 +232,31 @@ setup_conda_env() {
   log "Environment '$ENV_NAME' activated"
   export CUDA_PATH="$INSTALL_ENV_DIR"
 }
+
+manage_repository() {
+  log "Managing repository..."
+  
+  cd "$SCRIPT_DIR"
+  
+  if [[ -d "$LOLLMS_DIR" ]]; then
+    log "Updating existing repository..."
+    cd "$LOLLMS_DIR"
+    git pull
+    git submodule update --init --recursive
+  else
+    log "Cloning repository..."
+    git clone --depth 1 --recurse-submodules "$REPO_URL"
+    cd "$LOLLMS_DIR"
+    git submodule update --init --recursive
+  fi
+
+  local components=("lollms_core" "utilities/safe_store")
+  [[ ! -d "$SCRIPT_DIR/lollms-webui" ]] && components+=("utilities/pipmaster")
+  
+  for component in "${components[@]}"; do
+    if [[ -d "$component" ]]; then
+      log "Installing $component..."
+      (cd "$component" && pip install -e .)
+    fi
+  done
+}
