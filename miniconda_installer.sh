@@ -128,3 +128,47 @@ echo -e "\n${GREEN}${BOLD}🚀 QUANTUM INSTALLATION COMMENCING... 🚀${NC}\n"
 
 
 set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly PACKAGES_TO_INSTALL="python=3.11 git pip"
+readonly REPO_URL="https://github.com/ParisNeo/lollms-webui.git"
+readonly ENV_NAME="lollms"
+readonly ARCH=$(uname -m)
+
+readonly INSTALLER_FILES="$SCRIPT_DIR/installer_files"
+readonly MINICONDA_DIR="$INSTALLER_FILES/miniconda3"
+readonly INSTALL_ENV_DIR="$INSTALLER_FILES/lollms_env"
+readonly LOLLMS_DIR="$SCRIPT_DIR/lollms-webui"
+
+readonly MINICONDA_URL=$(
+  [[ "$ARCH" == "arm64" ]] && 
+  echo "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh" ||
+  echo "https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
+)
+
+log() { echo ">>> $*"; }
+error_exit() { echo "ERROR: $*" >&2; exit 1; }
+
+
+print_banner() {
+  cat << 'EOF'
+*****************************************************
+***            LoLLMs Installation Script        ***
+***         Large Language Models WebUI          ***
+*****************************************************
+EOF
+}
+
+
+preflight_checks() {
+  log "Running pre-flight checks..."
+  
+  [[ "$SCRIPT_DIR" == *" "* ]] && error_exit "Installation path contains spaces. Miniconda cannot be installed."
+  
+  if [[ "$SCRIPT_DIR" =~ [^a-zA-Z0-9/_.-] ]]; then
+    echo "WARNING: Special characters detected in path. This may cause installation issues."
+    read -rp "Press Enter to continue or Ctrl+C to abort..."
+  fi
+  
+  ((${#SCRIPT_DIR} > 100)) && echo "WARNING: Long installation path detected. This may cause issues."
+}
