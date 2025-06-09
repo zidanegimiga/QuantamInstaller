@@ -200,3 +200,19 @@ setup_environment() {
   
   mkdir -p "$INSTALLER_FILES/temp"
 }
+
+
+install_miniconda() {
+  [[ -f "$MINICONDA_DIR/bin/activate" ]] && { log "Miniconda already installed"; return; }
+  
+  log "Installing Miniconda..."
+  
+  local installer_name
+  [[ "$ARCH" == "arm64" ]] && installer_name="Miniforge3-MacOSX-arm64.sh" || installer_name="Miniconda3-latest-MacOSX-x86_64.sh"
+
+  curl -fsSL "$MINICONDA_URL" -o "$installer_name"
+  bash "$installer_name" -b -p "$MINICONDA_DIR" || error_exit "Miniconda installation failed"
+  rm -f "$installer_name"
+  
+  [[ -f "$MINICONDA_DIR/bin/activate" ]] || error_exit "Miniconda installation verification failed"
+}
