@@ -276,3 +276,20 @@ install_dependencies() {
   
   python -m pip install -r requirements.txt --upgrade
 }
+
+setup_scripts() {
+  log "Setting up run scripts..."
+  
+  local scripts=(
+    "macos_run.sh"
+    "macos_conda_session.sh"
+  )
+  
+  for script in "${scripts[@]}"; do
+    if [[ ! -e "$SCRIPT_DIR/$script" ]]; then
+      local source_script="$LOLLMS_DIR/scripts/macos/$script"
+      [[ -f "$source_script" ]] && cp "$source_script" "$SCRIPT_DIR/"
+    fi
+  done
+}
+
