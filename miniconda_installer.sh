@@ -293,3 +293,32 @@ setup_scripts() {
   done
 }
 
+select_binding() {
+  log "Setting up AI model bindings..."
+  
+  cd "$LOLLMS_DIR"
+  
+  local -a options=(
+    "None (install later)"
+    "ollama (Local)"
+    "python_llama_cpp (Local)" 
+    "bs_exllamav2 (Local)"
+    "open_router (Remote)"
+    "open_ai (Remote)"
+    "mistral_ai (Remote)"
+  )
+  
+  echo "Select default binding:"
+  select opt in "${options[@]}"; do
+    case $REPLY in
+      1) log "No binding selected"; break ;;
+      2) python3 zoos/bindings_zoo/ollama/__init__.py; break ;;
+      3) python3 zoos/bindings_zoo/python_llama_cpp/__init__.py; break ;;
+      4) python3 zoos/bindings_zoo/bs_exllamav2/__init__.py; break ;;
+      5) python3 zoos/bindings_zoo/open_router/__init__.py; break ;;
+      6) python3 zoos/bindings_zoo/open_ai/__init__.py; break ;;
+      7) python3 zoos/bindings_zoo/mistral_ai/__init__.py; break ;;
+      *) echo "Invalid option. Please try again." ;;
+    esac
+  done
+}
